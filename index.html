@@ -12,38 +12,38 @@
     <div id="flp-list"></div>
 
     <script>
-        async function loadData() {
-            let url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR2LKv2QcODF4I3v6H7EJ5PYBzmtF8Vt_oa6iCLTUzb9iDF3jIF8W3fJzqgBXAvlz1DYOD22TlCbMDL/pub?output=csv"; // replace with your published link
-            let res = await fetch(url);
-            let csv = await res.text();
+            async function loadData() {
+        let url = "https://docs.google.com/spreadsheets/d/e/YOUR_SHEET_ID/pub?output=csv"; // replace with your published link
+        let res = await fetch(url);
+        let csv = await res.text();
 
-            // Convert CSV to array of objects
-            let lines = csv.split("\n");
-            let headers = lines[0].split(",");
-            let data = lines.slice(1).map(line => {
-                let cols = line.split(",");
-                let obj = {};
-                headers.forEach((h, i) => obj[h.trim()] = cols[i].trim());
-                return obj;
-            });
+        let lines = csv.split("\n");
+        let headers = lines[0].split(",");
+        let data = lines.slice(1).map(line => {
+            let cols = line.split(",");
+            let obj = {};
+            headers.forEach((h, i) => obj[h.trim()] = cols[i].trim());
+            return obj;
+        });
 
-            // Display
-            let container = document.getElementById("flp-list");
-            data.forEach(row => {
-                if (!row.Title) return; // skip empty rows
-                let div = document.createElement("div");
-                div.className = "card";
-                div.innerHTML = `
-                    <h2>${row.Title}</h2>
-                    <p>Genre: ${row.Genre}</p>
-                    <p>Uploader: ${row.Uploader}</p>
-                    <a href="${row.Link}" target="_blank">Download</a>
-                    <p>${row.Notes || ""}</p>
-                `;
-                container.appendChild(div);
-            });
-        }
-        loadData();
+        let container = document.getElementById("flp-list");
+        data.forEach(row => {
+            if (!row.Title) return; // skip empty rows
+            let div = document.createElement("div");
+            div.className = "card";
+            div.innerHTML = `
+                <h2>${row.Title}</h2>
+                <p>Creator: ${row.Creator}</p>
+                <p>DAW version: ${row['DAW version']}</p>
+                <p>Plugins: ${row.Plugins}</p>
+                <a href="${row.Link}" target="_blank">Download</a>
+                <p>${row.notes || ""}</p>
+            `;
+            container.appendChild(div);
+        });
+    }
+    loadData();
+
     </script>
 </body>
 </html>
