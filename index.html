@@ -36,8 +36,8 @@
                 <p>Creator: ${row.Creator}</p>
                 <p>DAW version: ${row['DAW version']}</p>
                 <p>Plugins: ${row.Plugins}</p>
-                <a href="${row.Link}" target="_blank">Download</a>
                 <p>${row.notes || ""}</p>
+                <a href="${row.Link}" target="_blank">Download</a>
             `;
             container.appendChild(div);
         });
@@ -47,4 +47,5 @@
     </script>
 </body>
 </html>
+
 
