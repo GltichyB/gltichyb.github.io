@@ -1,51 +1,73 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>FLP Library</title>
     <style>
-        body { font-family: Arial; }
-        .card { border: 1px solid #ccc; padding: 10px; margin: 10px; }
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #searchBox { padding: 5px; width: 200px; }
+        button { padding: 5px 10px; margin-left: 5px; }
+        .card { border: 1px solid #ccc; padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .card h2 { margin: 0 0 5px 0; }
     </style>
 </head>
 <body>
     <h1>FLP Library</h1>
+
+    <!-- Search bar -->
+    <input type="text" id="searchBox" placeholder="Search FLPs...">
+    <button onclick="search()">Search</button>
+
+    <!-- Container for FLP cards -->
     <div id="flp-list"></div>
 
+    <!-- PapaParse for CSV handling -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script>
-            async function loadData() {
-        let url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR2LKv2QcODF4I3v6H7EJ5PYBzmtF8Vt_oa6iCLTUzb9iDF3jIF8W3fJzqgBXAvlz1DYOD22TlCbMDL/pub?output=csv"; // replace with your published link
-        let res = await fetch(url);
-        let csv = await res.text();
+        let flpData = []; // store all data
 
-        let lines = csv.split("\n");
-        let headers = lines[0].split(",");
-        let data = lines.slice(1).map(line => {
-            let cols = line.split(",");
-            let obj = {};
-            headers.forEach((h, i) => obj[h.trim()] = cols[i].trim());
-            return obj;
-        });
+        async function loadData() {
+            let url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR2LKv2QcODF4I3v6H7EJ5PYBzmtF8Vt_oa6iCLTUzb9iDF3jIF8W3fJzqgBXAvlz1DYOD22TlCbMDL/pub?output=csv"; // replace YOUR_SHEET_ID
+            let res = await fetch(url);
+            let csv = await res.text();
 
-        let container = document.getElementById("flp-list");
-        data.forEach(row => {
-            if (!row.Title) return; // skip empty rows
-            let div = document.createElement("div");
-            div.className = "card";
-            div.innerHTML = `
-                <h2>${row.Title}</h2>
-                <p>Creator: ${row.Creator}</p>
-                <p>DAW version: ${row['DAW version']}</p>
-                <p>Plugins: ${row.Plugins}</p>
-                <p>${row.notes || ""}</p>
-                <a href="${row.Link}" target="_blank">Download</a>
-            `;
-            container.appendChild(div);
-        });
-    }
-    loadData();
+            let parsed = Papa.parse(csv, { header: true });
+            flpData = parsed.data;
 
+            displayData(flpData);
+        }
+
+        function displayData(data) {
+            let container = document.getElementById("flp-list");
+            container.innerHTML = ""; // clear previous cards
+
+            data.forEach(row => {
+                if (!row.Title) return; // skip empty rows
+                let div = document.createElement("div");
+                div.className = "card";
+                div.innerHTML = `
+                    <h2>${row.Title}</h2>
+                    <p>Creator: ${row.Creator}</p>
+                    <p>DAW version: ${row['DAW version']}</p>
+                    <p>Plugins: ${row.Plugins}</p>
+                    <p>Notes: ${row.notes || ""}</p>
+                    <a href="${row.Link}" target="_blank">Download</a>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function search() {
+            let query = document.getElementById("searchBox").value.toLowerCase();
+            let filtered = flpData.filter(row => {
+                return (row.Title && row.Title.toLowerCase().includes(query)) ||
+                       (row.Creator && row.Creator.toLowerCase().includes(query)) ||
+                       (row.Plugins && row.Plugins.toLowerCase().includes(query));
+            });
+            displayData(filtered);
+        }
+
+        loadData();
     </script>
 </body>
 </html>
-
-
