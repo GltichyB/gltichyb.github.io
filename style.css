@@ -10,8 +10,10 @@ body {
 }
 
 .app {
-	min-height: 100vh;
+	min-height: 100vh;  /* Already good */
 	padding: 40px 20px;
+	display: flex;
+	flex-direction: column;
 }
 
 .container {
