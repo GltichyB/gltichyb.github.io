@@ -4,30 +4,120 @@
     <meta charset="UTF-8">
     <title>FLP Library</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        #searchBox { padding: 5px; width: 200px; }
-        button { padding: 5px 10px; margin-left: 5px; }
-        .card { border: 1px solid #ccc; padding: 10px; margin: 10px 0; border-radius: 5px; }
-        .card h2 { margin: 0 0 5px 0; }
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            background: linear-gradient(to bottom right, #f0c, #09f);
+            color: #111;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.2rem;
+        }
+
+        /* Search bar */
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        #searchBox {
+            width: 320px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        button {
+            padding: 12px 18px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 10px;
+            background: #09f;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        button:hover {
+            background: #0077cc;
+        }
+
+        /* Cards grid */
+        #flp-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 24px;
+        }
+
+        .card {
+            flex: 0 1 280px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            text-align: left;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+        }
+
+        .card h2 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            margin: 6px 0;
+        }
+
+        .card a {
+            display: inline-block;
+            margin-top: 10px;
+            color: #09f;
+            font-weight: bold;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
-    <h1>FLP Library</h1>
+    <div class="container">
+        <h1>FLP Library</h1>
 
-    <!-- Search bar -->
-    <input type="text" id="searchBox" placeholder="Search FLPs...">
-    <button onclick="search()">Search</button>
+        <!-- Search -->
+        <div class="search-container">
+            <input type="text" id="searchBox" placeholder="Search FLPs...">
+            <button onclick="search()">Search</button>
+        </div>
 
-    <!-- Container for FLP cards -->
-    <div id="flp-list"></div>
+        <!-- Cards -->
+        <div id="flp-list"></div>
+    </div>
 
-    <!-- PapaParse for CSV handling -->
+    <!-- PapaParse -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script>
-        let flpData = []; // store all data
+        let flpData = [];
 
         async function loadData() {
-            let url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR2LKv2QcODF4I3v6H7EJ5PYBzmtF8Vt_oa6iCLTUzb9iDF3jIF8W3fJzqgBXAvlz1DYOD22TlCbMDL/pub?output=csv"; // replace YOUR_SHEET_ID
+            let url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR2LKv2QcODF4I3v6H7EJ5PYBzmtF8Vt_oa6iCLTUzb9iDF3jIF8W3fJzqgBXAvlz1DYOD22TlCbMDL/pub?output=csv";
             let res = await fetch(url);
             let csv = await res.text();
 
@@ -39,18 +129,18 @@
 
         function displayData(data) {
             let container = document.getElementById("flp-list");
-            container.innerHTML = ""; // clear previous cards
+            container.innerHTML = "";
 
             data.forEach(row => {
-                if (!row.Title) return; // skip empty rows
+                if (!row.Title) return;
                 let div = document.createElement("div");
                 div.className = "card";
                 div.innerHTML = `
                     <h2>${row.Title}</h2>
-                    <p>Creator: ${row.Creator}</p>
-                    <p>DAW version: ${row['DAW version']}</p>
-                    <p>Plugins: ${row.Plugins}</p>
-                    <p>Notes: ${row.notes || ""}</p>
+                    <p><strong>Creator:</strong> ${row.Creator}</p>
+                    <p><strong>DAW version:</strong> ${row['DAW version']}</p>
+                    <p><strong>Plugins:</strong> ${row.Plugins}</p>
+                    <p>${row.notes || ""}</p>
                     <a href="${row.Link}" target="_blank">Download</a>
                 `;
                 container.appendChild(div);
@@ -68,18 +158,11 @@
         }
 
         loadData();
-    </script>
 
-    <script>
-    // trigger search on Enter key
-    const searchBox = document.getElementById("searchBox");
-    searchBox.addEventListener("keydown", function(event) {
-        if (event.key === "Enter") {
-            search(); // call the search function
-        }
-    });
-</script>
-    
+        // Trigger search on Enter
+        document.getElementById("searchBox").addEventListener("keydown", function(event) {
+            if (event.key === "Enter") search();
+        });
+    </script>
 </body>
 </html>
-
