@@ -1,0 +1,82 @@
+/* General layout */
+body {
+	margin: 0;
+	font-family: Arial, sans-serif;
+	background: linear-gradient(to bottom right, #f0c, #09f);
+	color: #111;
+}
+
+.app {
+	min-height: 100vh;
+	padding: 40px 20px;
+}
+
+.container {
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+/* Header */
+.header {
+	text-align: center;
+	font-size: 2.2rem;
+	margin-bottom: 30px;
+}
+
+/* Search */
+.search-container {
+	display: flex;
+	justify-content: center;
+	margin-bottom: 40px;
+}
+
+.search-container input {
+	width: 320px;
+	padding: 12px 16px;
+	border-radius: 10px;
+	border: none;
+	outline: none;
+	font-size: 1rem;
+	box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Card grid */
+.flp-list {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 24px;
+}
+
+/* Cards */
+.card {
+	flex: 0 1 280px;
+	background: #fff;
+	padding: 20px;
+	border-radius: 14px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+	text-align: left;
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+}
+
+.card h2 {
+	font-size: 1.3rem;
+	margin-bottom: 10px;
+}
+
+.card p {
+	margin: 6px 0;
+}
+
+.card a {
+	display: inline-block;
+	margin-top: 10px;
+	color: #09f;
+	font-weight: bold;
+	text-decoration: none;
+}
