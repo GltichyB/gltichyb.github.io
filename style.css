@@ -51,6 +51,7 @@ body {
 	flex-wrap: wrap;
 	justify-content: center;
 	gap: 24px;
+	min-height: calc(100vh - 120px); /* Adjust based on header/search height */
 }
 
 /* Cards */
