@@ -114,55 +114,58 @@
     <!-- PapaParse -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script>
-        let flpData = [];
+    let flpData = []; // store all data
 
-        async function loadData() {
-            let url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR2LKv2QcODF4I3v6H7EJ5PYBzmtF8Vt_oa6iCLTUzb9iDF3jIF8W3fJzqgBXAvlz1DYOD22TlCbMDL/pub?output=csv";
-            let res = await fetch(url);
-            let csv = await res.text();
+    async function loadData() {
+        let url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR2LKv2QcODF4I3v6H7EJ5PYBzmtF8Vt_oa6iCLTUzb9iDF3jIF8W3fJzqgBXAvlz1DYOD22TlCbMDL/pub?output=csv";
+        let res = await fetch(url);
+        let csv = await res.text();
 
-            let parsed = Papa.parse(csv, { header: true });
-            flpData = parsed.data;
+        let parsed = Papa.parse(csv, { header: true });
+        flpData = parsed.data;
 
-            displayData(flpData);
-        }
+        displayData(flpData);
+    }
 
-        function displayData(data) {
-            let container = document.getElementById("flp-list");
-            container.innerHTML = "";
+    function displayData(data) {
+        let container = document.getElementById("flp-list");
+        container.innerHTML = ""; // clear previous cards
 
-            data.forEach(row => {
-                if (!row.Title) return;
-                let div = document.createElement("div");
-                div.className = "card";
-                div.innerHTML = `
-                    <h2>${row.Title}</h2>
-                    <p><strong>Creator:</strong> ${row.Creator}</p>
-                    <p><strong>DAW version:</strong> ${row['DAW version']}</p>
-                    <p><strong>Plugins:</strong> ${row.Plugins}</p>
-                    <p>${row.notes || ""}</p>
-                    <a href="${row.Link}" target="_blank">Download</a>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        function search() {
-            let query = document.getElementById("searchBox").value.toLowerCase();
-            let filtered = flpData.filter(row => {
-                return (row.Title && row.Title.toLowerCase().includes(query)) ||
-                       (row.Creator && row.Creator.toLowerCase().includes(query)) ||
-                       (row.Plugins && row.Plugins.toLowerCase().includes(query));
-            });
-            displayData(filtered);
-        }
-
-        loadData();
-
-        // Trigger search on Enter
-        document.getElementById("searchBox").addEventListener("keydown", function(event) {
-            if (event.key === "Enter") search();
+        data.forEach(row => {
+            if (!row.Title) return; // skip empty rows
+            let div = document.createElement("div");
+            div.className = "card";
+            div.innerHTML = `
+                <h2>${row.Title}</h2>
+                <p>Creator: ${row.Creator}</p>
+                <p>DAW version: ${row['DAW version']}</p>
+                <p>Plugins: ${row.Plugins}</p>
+                <p>Notes: ${row.notes || ""}</p>
+                <a href="${row.Link}" target="_blank">Download</a>
+            `;
+            container.appendChild(div);
         });
-    </script>
+    }
+
+    function search() {
+        let query = document.getElementById("searchBox").value.toLowerCase();
+        let filtered = flpData.filter(row => {
+            return (row.Title && row.Title.toLowerCase().includes(query)) ||
+                   (row.Creator && row.Creator.toLowerCase().includes(query)) ||
+                   (row.Plugins && row.Plugins.toLowerCase().includes(query));
+        });
+        displayData(filtered);
+    }
+
+    // make search live as user types
+    document.addEventListener("DOMContentLoaded", () => {
+        const searchBox = document.getElementById("searchBox");
+        searchBox.addEventListener("input", search);
+    });
+
+    loadData();
+</script>
+
 </body>
 </html>
+
